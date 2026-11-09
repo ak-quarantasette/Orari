@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pulizie di casa</title>
+<meta name="description" content="Turni settimanali delle pulizie: cucina, bagno, corridoio.">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%231d1d1f'/%3E%3Cpath d='M20 40c6 0 10-4 12-12l4-12 4 12c2 8 6 12 12 12' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --surface: #ffffff;
+    --surface-2: #fbfbfd;
+    --text: #1d1d1f;
+    --text-2: #6e6e73;
+    --text-3: #86868b;
+    --line: rgba(0, 0, 0, 0.08);
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 28px rgba(0,0,0,.06);
+    --seg-bg: rgba(118, 118, 128, 0.12);
+    --seg-thumb: #ffffff;
+
+    --andrea: #0071e3;
+    --ludovico: #e8590c;
+    --saeed: #1f9d55;
+    --andrea-tint: rgba(0, 113, 227, 0.10);
+    --ludovico-tint: rgba(232, 89, 12, 0.10);
+    --saeed-tint: rgba(31, 157, 85, 0.10);
+
+    --radius: 22px;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --surface: #1c1c1e;
+      --surface-2: #161618;
+      --text: #f5f5f7;
+      --text-2: #a1a1a6;
+      --text-3: #8e8e93;
+      --line: rgba(255, 255, 255, 0.10);
+      --shadow: none;
+      --seg-bg: rgba(118, 118, 128, 0.24);
+      --seg-thumb: #636366;
+
+      --andrea: #2997ff;
+      --ludovico: #ff9f0a;
+      --saeed: #30d158;
+      --andrea-tint: rgba(41, 151, 255, 0.16);
+      --ludovico-tint: rgba(255, 159, 10, 0.16);
+      --saeed-tint: rgba(48, 209, 88, 0.16);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.47;
+    letter-spacing: -0.022em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: max(56px, env(safe-area-inset-top)) 20px 64px;
+  }
+
+  /* ---------- Header ---------- */
+  .eyebrow {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-3);
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+  .hero-title {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", sans-serif;
+    font-size: clamp(40px, 8vw, 64px);
+    line-height: 1.04;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+  }
+  .hero-title .muted { color: var(--text-3); }
+  .hero-sub {
+    margin-top: 14px;
+    font-size: clamp(17px, 2.4vw, 21px);
+    color: var(--text-2);
+    letter-spacing: -0.015em;
+    max-width: 38ch;
+  }
+  .hero-sub strong { color: var(--text); font-weight: 600; }
+
+  /* ---------- Segmented control ---------- */
+  .toolbar {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .toolbar-label { font-size: 14px; color: var(--text-3); }
+  .seg {
+    position: relative;
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    background: var(--seg-bg);
+    border-radius: 10px;
+    padding: 2px;
+    max-width: 100%;
+  }
+  .seg-thumb {
+    position: absolute;
+    top: 2px; bottom: 2px; left: 2px;
+    border-radius: 8px;
+    background: var(--seg-thumb);
+    box-shadow: 0 3px 8px rgba(0,0,0,.12), 0 3px 1px rgba(0,0,0,.04);
+    transition: transform .35s var(--ease), width .35s var(--ease);
+  }
+  .seg button {
+    position: relative;
+    z-index: 1;
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    padding: 6px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .seg button[aria-pressed="true"] { font-weight: 600; }
+  .seg button:focus-visible { outline: 2px solid var(--andrea); outline-offset: 1px; }
+
+  /* ---------- Cards ---------- */
+  .cards {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .card {
+    position: relative;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px 24px 22px;
+    min-height: 210px;
+    display: flex;
+    flex-direction: column;
+    transition: opacity .4s var(--ease), transform .4s var(--ease), box-shadow .4s var(--ease);
+    overflow: hidden;
+  }
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 2px var(--accent, transparent);
+    opacity: 0;
+    transition: opacity .4s var(--ease);
+    pointer-events: none;
+  }
+  .card.is-mine::after { opacity: 1; }
+  .card.is-dim { opacity: .38; transform: scale(.985); }
+
+  .card-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: var(--tint);
+    color: var(--accent);
+  }
+  .card-icon svg { width: 24px; height: 24px; }
+  .card-area {
+    margin-top: 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-3);
+    letter-spacing: -0.01em;
+  }
+  .card-person {
+    margin-top: auto;
+    padding-top: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .card-tag {
+    position: absolute;
+    top: 22px; right: 22px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--tint);
+    padding: 4px 10px;
+    border-radius: 999px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity .35s var(--ease), transform .35s var(--ease);
+  }
+  .card.is-mine .card-tag { opacity: 1; transform: none; }
+
+  /* ---------- Note ---------- */
+  .note {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: var(--text-2);
+    padding: 14px 18px;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+  .note svg { flex: none; width: 20px; height: 20px; color: var(--text-3); }
+  .note strong { color: var(--text); font-weight: 600; }
+
+  /* ---------- Schedule ---------- */
+  .section-title {
+    margin-top: 64px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .section-sub { margin-top: 4px; font-size: 15px; color: var(--text-2); }
+
+  .table {
+    margin-top: 20px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr 1fr 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 24px;
+    border-top: 1px solid var(--line);
+  }
+  .row:first-child { border-top: 0; }
+  .row.head {
+    padding-top: 14px; padding-bottom: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--surface-2);
+  }
+  .row.is-now { background: var(--surface-2); }
+  .date { font-weight: 600; letter-spacing: -0.015em; }
+  .date small {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-3);
+    letter-spacing: -0.005em;
+  }
+  .badge-now {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: var(--seg-bg);
+    padding: 1px 7px;
+    border-radius: 999px;
+    vertical-align: 2px;
+  }
+  .who {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    transition: opacity .35s var(--ease);
+  }
+  .who .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+  }
+  .who.is-dim { opacity: .3; }
+  .who.is-mine { font-weight: 600; }
+  .who .area-m { display: none; }
+
+  footer {
+    margin-top: 48px;
+    font-size: 13px;
+    color: var(--text-3);
+    text-align: center;
+  }
+
+  /* ---------- Enter animation ---------- */
+  .rise { animation: rise .7s var(--ease) both; }
+  .rise.d1 { animation-delay: .05s; }
+  .rise.d2 { animation-delay: .12s; }
+  .rise.d3 { animation-delay: .19s; }
+  .rise.d4 { animation-delay: .26s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .rise { animation: none; }
+    * { transition: none !important; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 720px) {
+    .wrap { padding-top: max(40px, env(safe-area-inset-top)); padding-left: 16px; padding-right: 16px; }
+    .cards { grid-template-columns: 1fr; gap: 12px; }
+    .card {
+      min-height: 0;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+    }
+    .card-text { display: flex; flex-direction: column; }
+    .card-area { margin-top: 0; }
+    .card-person { margin-top: 0; padding-top: 0; font-size: 24px; }
+    .card-tag { top: 50%; right: 20px; transform: translateY(-50%) translateX(4px); }
+    .card.is-mine .card-tag { transform: translateY(-50%); }
+    .toolbar { margin-top: 28px; }
+    .toolbar-label { display: none; }
+    .seg { width: 100%; }
+    .seg button { padding: 7px 8px; }
+
+    .row { grid-template-columns: 1fr; gap: 6px; padding: 16px 20px; }
+    .row.head { display: none; }
+    .people { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+    .who .area-m { display: inline; color: var(--text-3); }
+  }
+  @media (min-width: 721px) { .people { display: contents; } .card-text { display: contents; } }
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <p class="eyebrow rise">Pulizie di casa</p>
+      <h1 class="hero-title rise d1" id="heroTitle">Sabato</h1>
+      <p class="hero-sub rise d2" id="heroSub"></p>
+    </header>
+
+    <div class="toolbar rise d3">
+      <span class="toolbar-label">Turni di questa settimana</span>
+      <div class="seg" role="group" aria-label="Evidenzia persona" id="seg">
+        <span class="seg-thumb" id="segThumb"></span>
+        <button type="button" data-person="" aria-pressed="true">Tutti</button>
+        <button type="button" data-person="andrea" aria-pressed="false">Andrea</button>
+        <button type="button" data-person="ludovico" aria-pressed="false">Ludovico</button>
+        <button type="button" data-person="saeed" aria-pressed="false">Saeed</button>
+      </div>
+    </div>
+
+    <section class="cards rise d3" id="cards" aria-label="Turni di questa settimana"></section>
+
+    <p class="note rise d4">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span>Si pulisce il <strong>sabato</strong>. Se proprio non riesci, recupera la <strong>domenica</strong>.</span>
+    </p>
+
+    <section class="rise d4" aria-labelledby="nextTitle">
+      <h2 class="section-title" id="nextTitle">Prossime settimane</h2>
+      <p class="section-sub">Ogni settimana si cambia stanza: in tre settimane ognuno le fa tutte.</p>
+      <div class="table" id="table" role="table"></div>
+    </section>
+
+    <footer>Andrea · Ludovico · Saeed</footer>
+  </main>
+
+<script>
+(function () {
+  // Settimana di partenza: sabato 7 novembre 2026 → Andrea in cucina.
+  var ANCHOR = new Date(2026, 10, 7);
+  var WEEKS_AHEAD = 8;
+
+  var PEOPLE = [
+    { id: "andrea",   name: "Andrea" },
+    { id: "ludovico", name: "Ludovico" },
+    { id: "saeed",    name: "Saeed" }
+  ];
+
+  var ICONS = {
+    cucina: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11h16v2a7 7 0 0 1-7 7h-2a7 7 0 0 1-7-7v-2Z"/><path d="M2.5 11h19"/><path d="M9 7.5c0-1.2 1-1.3 1-2.5M13 7.5c0-1.2 1-1.3 1-2.5"/></svg>',
+    bagno: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18v1.5A5.5 5.5 0 0 1 15.5 19h-7A5.5 5.5 0 0 1 3 13.5V12Z"/><path d="M6 12V6.5A2.5 2.5 0 0 1 8.5 4c1.1 0 2 .7 2.4 1.7"/><path d="M7 19l-1 2M17 19l1 2"/></svg>',
+    corridoio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5V21"/><path d="M3 21h18"/><circle cx="15" cy="12.5" r=".9" fill="currentColor" stroke="none"/></svg>'
+  };
+
+  // L'ordine delle stanze definisce la rotazione.
+  var AREAS = [
+    { id: "cucina",    name: "Cucina" },
+    { id: "bagno",     name: "Bagno" },
+    { id: "corridoio", name: "Corridoio e entrata" }
+  ];
+
+  var DAY = 86400000;
+  var MONTHS = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
+
+  function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function daysBetween(a, b) { return Math.round((startOfDay(b) - startOfDay(a)) / DAY); }
+  function mod(n, m) { return ((n % m) + m) % m; }
+
+  // Sabato della settimana corrente (settimana lunedì → domenica).
+  function saturdayOf(d) {
+    var day = d.getDay();            // 0 dom … 6 sab
+    var offset = day === 0 ? -1 : 6 - day;
+    return addDays(startOfDay(d), offset);
+  }
+
+  // Stanza a alla settimana w → persona (a - w) mod 3.
+  // Settimana 0: Andrea cucina, Ludovico bagno, Saeed corridoio.
+  // Settimana 1: Saeed cucina, Andrea bagno, Ludovico corridoio … ognuno avanza di una stanza.
+  function assignment(w) {
+    return AREAS.map(function (area, a) {
+      return { area: area, person: PEOPLE[mod(a - w, 3)] };
+    });
+  }
+  function weekIndex(sat) { return Math.round(daysBetween(ANCHOR, sat) / 7); }
+
+  var today = startOfDay(new Date());
+  var sat = saturdayOf(today);
+  var sun = addDays(sat, 1);
+  var w = weekIndex(sat);
+
+  // ---- Hero ----
+  var diff = daysBetween(today, sat);
+  var title = document.getElementById("heroTitle");
+  var sub = document.getElementById("heroSub");
+  var dateStr = sat.getDate() + " " + MONTHS[sat.getMonth()];
+
+  if (diff === 0) {
+    title.innerHTML = 'Oggi si pulisce.';
+    sub.innerHTML = 'Sabato ' + dateStr + '. Se oggi non riesci, c’è ancora <strong>domani</strong>.';
+  } else if (diff < 0) {
+    title.innerHTML = 'Oggi è domenica.';
+    sub.innerHTML = 'Ultima occasione per chi non ha pulito ieri.';
+  } else {
+    title.innerHTML = 'Sabato ' + sat.getDate() + '<br><span class="muted">' + MONTHS[sat.getMonth()] + '</span>';
+    sub.innerHTML = diff === 1 ? 'È <strong>domani</strong>.' : 'Tra <strong>' + diff + ' giorni</strong>. Recupero domenica ' + sun.getDate() + '.';
+  }
+
+  // ---- Cards ----
+  var cards = document.getElementById("cards");
+  cards.innerHTML = assignment(w).map(function (x) {
+    var p = x.person.id;
+    return '<article class="card" data-person="' + p + '" style="--accent:var(--' + p + ');--tint:var(--' + p + '-tint)">' +
+      '<span class="card-tag">Tocca a te</span>' +
+      '<div class="card-icon">' + ICONS[x.area.id] + '</div>' +
+      '<div class="card-text">' +
+        '<p class="card-area">' + x.area.name + '</p>' +
+        '<p class="card-person">' + x.person.name + '</p>' +
+      '</div>' +
+    '</article>';
+  }).join("");
+
+  // ---- Table ----
+  var table = document.getElementById("table");
+  var html = '<div class="row head" role="row"><span role="columnheader">Sabato</span>' +
+    AREAS.map(function (a) { return '<span role="columnheader">' + a.name + '</span>'; }).join("") + '</div>';
+  for (var i = 0; i < WEEKS_AHEAD; i++) {
+    var s = addDays(sat, i * 7);
+    var label = s.getDate() + " " + MONTHS[s.getMonth()];
+    var hint = i === 0 ? '<span class="badge-now">Questa</span>' : '';
+    var small = i === 0 ? 'questa settimana' : (i === 1 ? 'settimana prossima' : 'tra ' + i + ' settimane');
+    html += '<div class="row' + (i === 0 ? ' is-now' : '') + '" role="row">' +
+      '<span class="date" role="cell">' + label + hint + '<small>' + small + '</small></span>' +
+      '<span class="people">' +
+      assignment(w + i).map(function (x) {
+        var p = x.person.id;
+        return '<span class="who" role="cell" data-person="' + p + '" style="--accent:var(--' + p + ')">' +
+          '<span class="dot"></span><span>' + x.person.name + '</span>' +
+          '<span class="area-m">' + x.area.name.split(" ")[0] + '</span></span>';
+      }).join("") +
+      '</span></div>';
+  }
+  table.innerHTML = html;
+
+  // ---- Person filter ----
+  var seg = document.getElementById("seg");
+  var thumb = document.getElementById("segThumb");
+  var buttons = Array.prototype.slice.call(seg.querySelectorAll("button"));
+
+  function moveThumb(btn) {
+    thumb.style.width = btn.offsetWidth + "px";
+    thumb.style.transform = "translateX(" + (btn.offsetLeft - 2) + "px)";
+  }
+
+  function select(person, save) {
+    buttons.forEach(function (b) {
+      var on = b.getAttribute("data-person") === person;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      if (on) moveThumb(b);
+    });
+    document.querySelectorAll(".card").forEach(function (c) {
+      var mine = person && c.getAttribute("data-person") === person;
+      c.classList.toggle("is-mine", !!mine);
+      c.classList.toggle("is-dim", !!person && !mine);
+    });
+    document.querySelectorAll(".who").forEach(function (el) {
+      var mine = person && el.getAttribute("data-person") === person;
+      el.classList.toggle("is-mine", !!mine);
+      el.classList.toggle("is-dim", !!person && !mine);
+    });
+    if (save) { try { localStorage.setItem("pulizie.persona", person); } catch (e) {} }
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () { select(b.getAttribute("data-person"), true); });
+  });
+
+  var saved = "";
+  try { saved = localStorage.getItem("pulizie.persona") || ""; } catch (e) {}
+  thumb.style.transition = "none";
+  select(saved, false);
+  requestAnimationFrame(function () { requestAnimationFrame(function () { thumb.style.transition = ""; }); });
+  window.addEventListener("resize", function () {
+    var active = seg.querySelector('button[aria-pressed="true"]');
+    if (active) moveThumb(active);
+  });
+})();
+</script>
+</body>
+</html>
